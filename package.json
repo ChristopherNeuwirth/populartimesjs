@@ -11,9 +11,11 @@
   "author": "Christopher Neuwirth <christopher.neuwirth@mhp.com>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^12.0.2",
     "nodemon": "^1.19.1",
