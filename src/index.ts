@@ -2,8 +2,14 @@ import { resolve } from 'path';
 import { config } from 'dotenv';
 config({ path: resolve(__dirname, '../.env') });
 
-import { PopulartimesService } from './populartimes';
+import { Populartimes } from './populartimes';
 
-const populartimesService = new PopulartimesService(process.env.GOOGLEAPIKEY);
+// just for development purpose. If finished make this primary entry point for popular times.
 
-console.log(populartimesService.placeDetails('ChIJc9Ra71_RmUcRzdxRjVQjqXo'));
+const populartimes = new Populartimes(process.env.GOOGLEAPIKEY);
+const testPlace = 'ChIJc9Ra71_RmUcRzdxRjVQjqXo'; // IKEA Ludwigsburg
+
+(async () => {
+  const data = await populartimes.placeDetails(testPlace);
+  console.log('🚀', data);
+})();

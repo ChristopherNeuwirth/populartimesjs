@@ -6,7 +6,9 @@
     "trailing-comma": [true],
     "no-console": false,
     "quotemark": [true, "single", "jsx-double"],
-    "ordered-imports": false
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "no-unused-expression": false
   },
   "rulesDirectory": []
 }
