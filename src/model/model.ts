@@ -1,6 +1,6 @@
 export interface IPlace {
   id: string;
-  name: string;
+  name?: string;
   icon?: string;
   phone?: string;
   address_components?: IAddress;
@@ -12,37 +12,55 @@ export interface IPlace {
   vicinity?: string;
   website?: string;
   current_popularity?: number;
+  current_popularity_text?: ILivePopularity;
   populartimes?: IPopularTime[];
+  populartimes_today?: IPopularTime;
 }
 
-interface IAddress {
+export interface IAddress {
   street?: string;
   street_number?: string;
   locality?: string;
   postal_code?: string;
 }
 
-interface ILocation {
+export interface ILocation {
   lat: number;
   long: number;
 }
 
-interface IOpeningHours {
+export interface IOpeningHours {
   open_now: boolean;
   periods: IPeriod[];
 }
 
-interface IPeriod {
+export interface IPeriod {
   close: IDayTime;
   open: IDayTime;
 }
 
-interface IDayTime {
+export interface IDayTime {
   day: number;
   time: string;
 }
 
-interface IPopularTime {
-  name: string;
+export interface IPopularTime {
+  day: string;
   data: number[];
+}
+
+export interface ILivePopularity {
+  nowBadge?: string;
+  liveDescription?: string;
+}
+
+export interface ILocalization {
+  [key: string]: {
+    default: string;
+    currently: string;
+  };
+}
+
+export interface IWeek {
+  [key: number]: string;
 }
