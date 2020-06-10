@@ -9,9 +9,9 @@ export class Populartimes {
     private readonly googleApiKey: string,
     private outputFormat: string = 'json',
     private language: string = 'de'
-  ) { }
+  ) {}
 
-  public async placeDetails(placeId: string) {
+  public async placeDetails(placeId: string): Promise<IPlace> {
     if (!this.googleApiKey) {
       throw new Error('No Google API Key configured');
     }
@@ -27,13 +27,16 @@ export class Populartimes {
   }
 
   // @TODO: return a single value which is the popularity right now
-  public now() { }
+  public now() {}
 
   // @TODO: return all available times for base graph
-  public fullWeek() { }
+  public fullWeek() {}
 
   // @TODO: return the popular times of today
-  public today() { }
+  public today() {}
+
+  // @TODO: add method to debug api if something changes on google side
+  public debug() {}
 
   public async locationPopulartimes(placeId: string) {
     let googlePageBody: JSDOM;
@@ -45,14 +48,14 @@ export class Populartimes {
     }
 
     const rawData = this.transformDomDataToPopularRawtimes(googlePageBody);
-
     // @TODO: transform to single data (extract today as additional value and transform to entry)
+    const extractedData = this.transformRawData(rawData);
     // @TODO: sort due to localized order of weekdays
 
-    return rawData;
+    return extractedData;
   }
 
-  private async fetchlocationDetails(placeId: string) {
+  private async fetchlocationDetails(placeId: string): Promise<IPlace> {
     // tslint:disable-next-line:max-line-length
     const apiDetailsUrl = `${API_DETAILS}${this.outputFormat}?placeid=${placeId}&key=${this.googleApiKey}&language=${this.language}`;
     let response;
@@ -75,13 +78,13 @@ export class Populartimes {
         open_now: response.data.result.opening_hours.open_now,
         periods: response.data.result.opening_hours.periods
       }
-    } as IPlace;
+    };
   }
 
-  private async fetchPlaceData(placeId: string) {
+  private async fetchPlaceData(placeId: string): Promise<string> {
     const uiDetailsUrl = `${UI_DETAILS}?q=place_id:${placeId}`;
 
-    let data;
+    let data: string;
 
     try {
       const browser = await puppeteer.launch();
@@ -96,11 +99,15 @@ export class Populartimes {
   }
 
   private transformDomDataToPopularRawtimes(domData: JSDOM) {
+    // @TODO: Handle Cannot read property 'innerHTML' of undefined (GESCHLOSSEN)
+
+    const badge = domData?.window?.document?.getElementsByClassName('section-popular-times-now-badge')[0]?.innerHTML;
+    const desc = domData?.window?.document?.getElementsByClassName('section-popular-times-live-description')[0]
+      ?.innerHTML;
 
     const rawCurrentPopularityText: ILivePopularity = {
-      nowBadge: domData.window.document.getElementsByClassName('section-popular-times-now-badge')[0].innerHTML,
-      liveDescription: domData.window.document.getElementsByClassName('section-popular-times-live-description')[0]
-        .innerHTML
+      nowBadge: badge ? badge : 'Derzeit', // @TODO: localize
+      liveDescription: desc ? desc : 'geschlossen' // @TODO: localize
     };
 
     const rawPopulartimes: any = {};
@@ -119,11 +126,45 @@ export class Populartimes {
     };
   }
 
-  //   return {
-  //   currentPopularity,
-  //   currentPopularityText,
-  //   populartimes
-  // };
+  private transformRawData(raw: any) {
+    const rawPopularTimes = raw.rawPopulartimes;
+
+    let popularTimes: any = {};
+
+    // find closed days: Um  zu  % ausgelastet.
+
+    // transform normal entries 'Um 06 Uhr zu 0 % ausgelastet.'
+
+    // find today weekday + popular value 'Derzeit zu 55 % ausgelastet; normal sind 22 %.',
+    // add entry for time where now needs to be extracted
+    for (const day of Object.keys(rawPopularTimes)) {
+      let dayData: IPopularTime = {
+        day: null,
+        data: null
+      };
+
+      if (rawPopularTimes[day].length === 1) {
+        dayData.day = day;
+        dayData.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        console.log(dayData);
+        //popularTimes[day] = dayData;
+      }
+      // rawPopularTimes[day].forEach((entry: any) => {
+      //   console.log(entry);
+      //   //popularTimes[day] = entry;
+      //   // if (entry.includes('  %')) {
+
+      //   // }
+      // });
+    }
+
+    return {
+      currentPopularity: NaN,
+      currentPopularityText: raw.rawCurrentPopularityText,
+      popularTimes
+    };
+  }
 
   // private splitEntry(entry: string) {
   //   const parts = entry.split(' ');

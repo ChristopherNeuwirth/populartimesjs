@@ -45,8 +45,9 @@ export interface IDayTime {
 }
 
 export interface IPopularTime {
-  day: string;
-  data: number[];
+  day: string | null;
+  data: number[] | null;
+  isToday?: boolean;
 }
 
 export interface ILivePopularity {
