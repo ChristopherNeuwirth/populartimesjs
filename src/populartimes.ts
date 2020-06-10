@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import puppeteer from 'puppeteer';
-import { API_DETAILS, UI_DETAILS, languageKeyWordMapping, weekOrderOfApi } from './model/constants';
+import { API_DETAILS, UI_DETAILS, languageSpecificMagic, weekOrderOfApi } from './model/constants';
 import { IPlace, ILivePopularity, IPopularTime } from './model/model';
 
 export class Populartimes {
@@ -67,16 +67,16 @@ export class Populartimes {
       console.error('🤔 Something went wrong fetching the location details.', error);
     }
     return {
-      id: response.data.result.id,
-      name: response.data.result.name,
-      business_status: response.data.result.business_status,
+      id: response?.data?.result?.id,
+      name: response?.data?.result?.name,
+      business_status: response?.data?.result?.business_status,
       geometry: {
-        lat: response.data.result.geometry.location.lat,
-        long: response.data.result.geometry.location.lng
+        lat: response?.data?.result?.geometry?.location.lat,
+        long: response?.data?.result?.geometry?.location.lng
       },
       opening_hours: {
-        open_now: response.data.result.opening_hours.open_now,
-        periods: response.data.result.opening_hours.periods
+        open_now: response?.data?.result?.opening_hours?.open_now,
+        periods: response?.data?.result?.opening_hours?.periods
       }
     };
   }
@@ -108,7 +108,7 @@ export class Populartimes {
       liveDescription: desc ? desc : 'geschlossen' // @TODO: localize
     };
 
-    const rawPopulartimes: any = {};
+    const rawPopulartimes: any = {}; // @TODO: add interface
     Array.from(domData.window.document.getElementsByClassName('section-popular-times-graph')).forEach(
       (timesGraphNode, i) => {
         rawPopulartimes[weekOrderOfApi[i]] = [];
@@ -127,74 +127,65 @@ export class Populartimes {
   private transformRawData(raw: any) {
     const rawPopularTimes = raw.rawPopulartimes;
 
-    let popularTimes: any = {};
-
-    // find closed days: Um  zu  % ausgelastet.
-
-    // transform normal entries 'Um 06 Uhr zu 0 % ausgelastet.'
-
-    // find today weekday + popular value 'Derzeit zu 55 % ausgelastet; normal sind 22 %.',
-    // add entry for time where now needs to be extracted
+    let currentPopularity: number;
+    let popularTimes: IPopularTime[] = [];
     for (const day of Object.keys(rawPopularTimes)) {
-      let dayData: IPopularTime = {
-        day: null,
-        data: null
-      };
-
-      if (rawPopularTimes[day].length === 1) {
-        dayData.day = day;
-        dayData.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-        console.log(dayData);
-        //popularTimes[day] = dayData;
-      }
-      // rawPopularTimes[day].forEach((entry: any) => {
-      //   console.log(entry);
-      //   //popularTimes[day] = entry;
-      //   // if (entry.includes('  %')) {
-
-      //   // }
-      // });
+      popularTimes.push({
+        day,
+        data: [...Array(24).fill(0)]
+      } as IPopularTime);
     }
 
+    // find todays weekday and popular value (Derzeit zu 55 % ausgelastet; normal sind 22 %)
+    // add entry for time where now needs to be extracted
+    for (const day of Object.keys(rawPopularTimes)) {
+      let lastEntry: string = ''; // needed for time of new entry
+      rawPopularTimes[day].forEach((entry: any, index: number) => {
+        if (entry.includes(languageSpecificMagic[this.language ? this.language : 'de'].currently)) {
+          const partsLast: string[] = lastEntry.split(' ');
+          const partsNow: string[] = entry.split(' ');
+          rawPopularTimes[day].splice(
+            index,
+            1,
+            languageSpecificMagic[this.language ? this.language : 'de'].pattern(
+              partsLast[languageSpecificMagic[this.language ? this.language : 'de'].patternSplitLast],
+              partsNow[languageSpecificMagic[this.language ? this.language : 'de'].patternSplit[1]]
+            )
+          );
+          const currentAsString = partsNow[
+            languageSpecificMagic[this.language ? this.language : 'de'].patternSplit[0]
+          ].split(' %');
+          currentPopularity = Number(currentAsString[0]);
+        }
+        lastEntry = entry;
+      });
+    }
+
+    // transform normal entries 'Um 06 Uhr zu 0 % ausgelastet.'
+    let weekDayIndex = 0;
+    for (const day of Object.keys(rawPopularTimes)) {
+      // find closed days (Um  zu  % ausgelastet)
+      if (rawPopularTimes[day].length === 1) {
+        weekDayIndex++;
+        continue;
+      }
+
+      rawPopularTimes[day].forEach((entry: any, index: number) => {
+        const timeValuePair = languageSpecificMagic[this.language ? this.language : 'de'].extractLocalizedValues(entry);
+        popularTimes[weekDayIndex].data.splice(timeValuePair.time, 1, timeValuePair.value);
+      });
+      weekDayIndex++;
+    }
+
+    // console.log(rawPopularTimes);
+    console.log(popularTimes);
+
     return {
-      currentPopularity: NaN,
+      currentPopularity,
       currentPopularityText: raw.rawCurrentPopularityText,
       popularTimes
     };
   }
 
-  // private splitEntry(entry: string) {
-  //   const parts = entry.split(' ');
-
-  //   // Fallback for entries where there is no rendered value
-  //   if (parts[0] === languageKeyWordMapping[this.language ? this.language : 'de'].default && parts[1] === '') {
-  //     return {
-  //       isNow: false,
-  //       time: NaN,
-  //       value: NaN
-  //     };
-  //   }
-
-  //   // ❌❌❌❌
-  //   // Brauche auch den Wert für die Zeit da bei "now"
-  //   // auch noch der zahlenwert für den default case drin steckt
-  //   if (parts[0] === languageKeyWordMapping[this.language ? this.language : 'de'].currently) {
-  //     return {
-  //       isNow: true,
-  //       time: NaN,
-  //       value: parts[2].replace(' %', '')
-  //     };
-  //   }
-
-  //   if (parts[0] === languageKeyWordMapping[this.language ? this.language : 'de'].default) {
-  //     return {
-  //       isNow: false,
-  //       time: parts[1],
-  //       value: parts[4].replace(' %', '')
-  //     };
-  //   }
-  // }
-
-  // private sortData() {}
+  private sortData() {}
 }
