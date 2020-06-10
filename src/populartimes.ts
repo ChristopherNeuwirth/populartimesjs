@@ -127,8 +127,9 @@ export class Populartimes {
   private transformRawData(raw: any) {
     const rawPopularTimes = raw.rawPopulartimes;
 
+    let today: string;
     let currentPopularity: number;
-    let popularTimes: IPopularTime[] = [];
+    const popularTimes: IPopularTime[] = [];
     for (const day of Object.keys(rawPopularTimes)) {
       popularTimes.push({
         day,
@@ -142,6 +143,7 @@ export class Populartimes {
       let lastEntry: string = ''; // needed for time of new entry
       rawPopularTimes[day].forEach((entry: any, index: number) => {
         if (entry.includes(languageSpecificMagic[this.language ? this.language : 'de'].currently)) {
+          today = day;
           const partsLast: string[] = lastEntry.split(' ');
           const partsNow: string[] = entry.split(' ');
           rawPopularTimes[day].splice(
@@ -168,6 +170,10 @@ export class Populartimes {
       if (rawPopularTimes[day].length === 1) {
         weekDayIndex++;
         continue;
+      }
+
+      if (today === day) {
+        popularTimes[weekDayIndex].isToday = true;
       }
 
       rawPopularTimes[day].forEach((entry: any, index: number) => {
