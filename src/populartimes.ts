@@ -99,8 +99,6 @@ export class Populartimes {
   }
 
   private transformDomDataToPopularRawtimes(domData: JSDOM) {
-    // @TODO: Handle Cannot read property 'innerHTML' of undefined (GESCHLOSSEN)
-
     const badge = domData?.window?.document?.getElementsByClassName('section-popular-times-now-badge')[0]?.innerHTML;
     const desc = domData?.window?.document?.getElementsByClassName('section-popular-times-live-description')[0]
       ?.innerHTML;
