@@ -13,17 +13,16 @@ export class Populartimes {
 
   public async placeDetails(placeId: string): Promise<IPlace> {
     if (!this.googleApiKey) {
-      throw new Error('No Google API Key configured');
+      throw new Error('🙄 No Google API Key configured');
     }
-
-    let placeDetailsData: IPlace;
 
     try {
-      placeDetailsData = await this.fetchlocationDetails(placeId);
+      const placeDetailsData: IPlace = await this.fetchlocationDetails(placeId);
+      return placeDetailsData;
     } catch (error) {
       console.error('🙈 Something happend during creating placeDetails', error);
+      return null;
     }
-    return placeDetailsData;
   }
 
   // @TODO: return a single value which is the popularity right now
@@ -39,19 +38,17 @@ export class Populartimes {
   public debug() {}
 
   public async locationPopulartimes(placeId: string) {
-    let googlePageBody: JSDOM;
-
+    // @TODO: Debugging mode
     try {
-      googlePageBody = new JSDOM(await this.fetchPlaceData(placeId));
+      const googlePageBody: JSDOM = new JSDOM(await this.fetchPlaceData(placeId));
+      const rawData = this.transformDomDataToPopularRawtimes(googlePageBody);
+      const extractedData = this.transformRawData(rawData);
+
+      return extractedData;
     } catch (error) {
       console.error('🤔 Something went wrong creating the popular times.', error);
+      return null;
     }
-
-    const rawData = this.transformDomDataToPopularRawtimes(googlePageBody);
-    const extractedData = this.transformRawData(rawData);
-    // @TODO: IMPROVE ERROR HANDLIUNG. IF FUCKED UP RETURN ERROR (currently it gets sucked)
-
-    return extractedData;
   }
 
   private async fetchlocationDetails(placeId: string): Promise<IPlace> {
@@ -62,39 +59,39 @@ export class Populartimes {
       response = await axios.request<any>({
         url: apiDetailsUrl
       });
+      return {
+        id: response.data.result.id,
+        name: response.data.result.name,
+        business_status: response.data.result.business_status,
+        geometry: {
+          lat: response.data.result.geometry.location.lat,
+          long: response.data.result.geometry.location.lng
+        },
+        opening_hours: {
+          open_now: response.data.result.opening_hours.open_now,
+          periods: response.data.result.opening_hours.periods
+        }
+      };
     } catch (error) {
-      console.error('🤔 Something went wrong fetching the location details.', error);
+      console.error('🤔 Something went wrong fetching the location details.');
+      throw new Error(error);
     }
-    return {
-      id: response?.data?.result?.id,
-      name: response?.data?.result?.name,
-      business_status: response?.data?.result?.business_status,
-      geometry: {
-        lat: response?.data?.result?.geometry?.location.lat,
-        long: response?.data?.result?.geometry?.location.lng
-      },
-      opening_hours: {
-        open_now: response?.data?.result?.opening_hours?.open_now,
-        periods: response?.data?.result?.opening_hours?.periods
-      }
-    };
   }
 
   private async fetchPlaceData(placeId: string): Promise<string> {
     const uiDetailsUrl = `${UI_DETAILS}?q=place_id:${placeId}&hl=${this.language}`;
 
-    let data: string;
-
     try {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto(uiDetailsUrl, { waitUntil: 'networkidle2' });
-      data = await page.evaluate(() => document.querySelector('.section-popular-times').outerHTML);
+      const data: string = await page.evaluate(() => document.querySelector('.section-popular-times').outerHTML);
       await browser.close();
+      return data;
     } catch (error) {
-      console.error('😵 Something went wrong fetching the data with puppeteer.', error);
+      console.error('😵 Something went wrong fetching the data with puppeteer.');
+      throw new Error(error);
     }
-    return data;
   }
 
   private transformDomDataToPopularRawtimes(domData: JSDOM) {
@@ -116,6 +113,10 @@ export class Populartimes {
         });
       }
     );
+
+    if (Object.keys(rawPopulartimes).length === 0 && rawPopulartimes.constructor === Object) {
+      throw new Error('🥺 Something went wrong processing the DOM data to raw data. Noting was extracted.');
+    }
 
     return {
       rawPopulartimes,
