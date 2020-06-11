@@ -104,8 +104,8 @@ export class Populartimes {
       ?.innerHTML;
 
     const rawCurrentPopularityText: ILivePopularity = {
-      nowBadge: badge ? badge : 'Derzeit', // @TODO: localize
-      liveDescription: desc ? desc : 'geschlossen' // @TODO: localize
+      nowBadge: badge ? badge : languageSpecificMagic[this.language].fallbackClosed[0],
+      liveDescription: desc ? desc : languageSpecificMagic[this.language].fallbackClosed[1]
     };
 
     const rawPopulartimes: any = {}; // @TODO: add interface
@@ -127,8 +127,7 @@ export class Populartimes {
   private transformRawData(raw: any) {
     const rawPopularTimes = raw.rawPopulartimes;
 
-    let today: string;
-    let currentPopularity: number;
+    let currentPopularity: number = 0;
     const popularTimes: IPopularTime[] = [];
     for (const day of Object.keys(rawPopularTimes)) {
       popularTimes.push({
@@ -142,21 +141,18 @@ export class Populartimes {
     for (const day of Object.keys(rawPopularTimes)) {
       let lastEntry: string = ''; // needed for time of new entry
       rawPopularTimes[day].forEach((entry: any, index: number) => {
-        if (entry.includes(languageSpecificMagic[this.language ? this.language : 'de'].currently)) {
-          today = day;
+        if (entry.includes(languageSpecificMagic[this.language].currently)) {
           const partsLast: string[] = lastEntry.split(' ');
           const partsNow: string[] = entry.split(' ');
           rawPopularTimes[day].splice(
             index,
             1,
-            languageSpecificMagic[this.language ? this.language : 'de'].pattern(
-              partsLast[languageSpecificMagic[this.language ? this.language : 'de'].patternSplitLast],
-              partsNow[languageSpecificMagic[this.language ? this.language : 'de'].patternSplit[1]]
+            languageSpecificMagic[this.language].pattern(
+              partsLast[languageSpecificMagic[this.language].patternSplitLast],
+              partsNow[languageSpecificMagic[this.language].patternSplit[1]]
             )
           );
-          const currentAsString = partsNow[
-            languageSpecificMagic[this.language ? this.language : 'de'].patternSplit[0]
-          ].split(' %');
+          const currentAsString = partsNow[languageSpecificMagic[this.language].patternSplit[0]].split(' %');
           currentPopularity = Number(currentAsString[0]);
         }
         lastEntry = entry;
@@ -165,19 +161,20 @@ export class Populartimes {
 
     // transform normal entries 'Um 06 Uhr zu 0 % ausgelastet.'
     let weekDayIndex = 0;
+    const today: string = weekOrderOfApi[new Date().getDay()];
     for (const day of Object.keys(rawPopularTimes)) {
+      if (today === day) {
+        popularTimes[weekDayIndex].isToday = true;
+      }
+
       // find closed days (Um  zu  % ausgelastet)
       if (rawPopularTimes[day].length === 1) {
         weekDayIndex++;
         continue;
       }
 
-      if (today === day) {
-        popularTimes[weekDayIndex].isToday = true;
-      }
-
       rawPopularTimes[day].forEach((entry: any, index: number) => {
-        const timeValuePair = languageSpecificMagic[this.language ? this.language : 'de'].extractLocalizedValues(entry);
+        const timeValuePair = languageSpecificMagic[this.language].extractLocalizedValues(entry);
         popularTimes[weekDayIndex].data.splice(timeValuePair.time, 1, timeValuePair.value);
       });
       weekDayIndex++;

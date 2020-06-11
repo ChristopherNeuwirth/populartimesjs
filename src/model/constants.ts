@@ -8,6 +8,7 @@ export const UI_DETAILS = `https://www.google.com/maps/place/`;
 export const languageSpecificMagic: ILocalization = {
   de: {
     currently: 'Derzeit',
+    fallbackClosed: ['Derzeit', 'geschlossen'],
     pattern: (time: string, value: string) => {
       const timeAsNumber = Number(time);
       value = value.substr(0, value.length - 1);

@@ -58,6 +58,7 @@ export interface ILivePopularity {
 export interface ILocalization {
   [key: string]: {
     currently: string;
+    fallbackClosed: string[];
     pattern: (arg0: string, arg1: string) => string;
     patternSplitLast: number;
     patternSplit: number[];
