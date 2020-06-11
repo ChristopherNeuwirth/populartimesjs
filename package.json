@@ -2,11 +2,12 @@
   "name": "populartimesjs",
   "version": "1.0.0",
   "description": "Retrieve popular times and current popularity of google places by its id.",
-  "main": "dist/index.js",
+  "main": "dist/populartimes.js",
   "scripts": {
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "start:watch": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "preversion": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -26,11 +27,11 @@
     "maps",
     "time"
   ],
+  "typings": "dist/populartimes",
   "author": "Christopher Neuwirth <npm@dev.cneuwirth.de>",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
-    "dotenv": "^8.2.0",
     "jsdom": "^16.2.2",
     "puppeteer": "^3.3.0"
   },
@@ -40,6 +41,7 @@
     "@types/jsdom": "^16.2.3",
     "@types/node": "^12.12.47",
     "@types/puppeteer": "^3.0.0",
+    "dotenv": "^8.2.0",
     "nodemon": "^1.19.4",
     "ts-node": "^8.10.2",
     "tslint": "^5.20.1",
@@ -57,5 +59,8 @@
     ],
     "exec": "npm start",
     "ext": "ts"
-  }
+  },
+  "files": [
+    "dist/"
+  ]
 }
