@@ -1,13 +1,31 @@
 {
   "name": "populartimesjs",
   "version": "1.0.0",
-  "description": "API",
+  "description": "Retrieve popular times and current popularity of google places by its id.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "start:watch": "nodemon",
     "build": "tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ChristopherNeuwirth/populartimesjs"
+  },
+  "bugs": {
+    "url": "https://github.com/ChristopherNeuwirth/populartimesjs/issues"
+  },
+  "engines": {
+    "node": ">=12.14.0"
+  },
+  "keywords": [
+    "populartimes",
+    "google",
+    "places",
+    "javascript",
+    "js",
+    "service"
+  ],
   "author": "Christopher Neuwirth <christopher.neuwirth@mhp.com>",
   "license": "ISC",
   "dependencies": {
