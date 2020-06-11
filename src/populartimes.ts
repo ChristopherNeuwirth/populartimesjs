@@ -13,6 +13,7 @@ export class Populartimes {
   ) {}
 
   public async placeDetails(placeId: string): Promise<IPlace> {
+    // @TODO: before returning ensure that closed days are filled up
     try {
       const placeDetailsData: IPlace = await this.placeService.fetchlocationDetails(
         placeId,

@@ -74,6 +74,35 @@ Text
 }
 ```
 
+---
+
+```js
+placeDetails(placeId: string): Promise<IPlace>
+```
+
+Text
+
+```json
+{
+  "id": "a4ae7e2192c051c60263805b7fdd8bb09150fe9d",
+  "name": "IKEA Einrichtungshaus Ludwigsburg",
+  "business_status": "OPERATIONAL",
+  "geometry": { "lat": 48.9180556, "long": 9.1538889 },
+  "opening_hours": {
+    "open_now": true,
+    "periods": [
+      // day = index of weekday array starting with 0 sunday
+      { "close": { "day": 1, "time": "2000" }, "open": { "day": 1, "time": "1000" } },
+      { "close": { "day": 2, "time": "2000" }, "open": { "day": 2, "time": "1000" } },
+      { "close": { "day": 3, "time": "2000" }, "open": { "day": 3, "time": "1000" } },
+      { "close": { "day": 4, "time": "2100" }, "open": { "day": 4, "time": "1000" } },
+      { "close": { "day": 5, "time": "2100" }, "open": { "day": 5, "time": "1000" } },
+      { "close": { "day": 6, "time": "2000" }, "open": { "day": 6, "time": "1000" } }
+    ]
+  }
+}
+```
+
 ## Documentation
 
 `fullWeek(placeId: string): Promise<IExtractedData>`
