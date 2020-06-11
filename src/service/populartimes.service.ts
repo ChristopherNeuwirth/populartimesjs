@@ -1,1 +1,7 @@
-// @TODO: Move whole data transformation here
+export class PopularTimesDataService {
+  constructor() {}
+
+  public test() {
+    return 'works';
+  }
+}

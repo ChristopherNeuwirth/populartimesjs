@@ -1,11 +1,15 @@
-import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import puppeteer from 'puppeteer';
-import { languageSpecificMagic } from './service/i18n';
-import { API_DETAILS, UI_DETAILS, weekOrderOfApi } from './model/constants';
+import { languageSpecificMagic } from './service/i18n.service';
+import { PopularTimesDataService } from './service/populartimes.service';
+import { UI_DETAILS, weekOrderOfApi } from './model/constants';
 import { IPlace, ILivePopularity, IPopularTime, IExtractedData } from './model/model';
+import { PlaceDetailService } from './service/details.service';
 
 export class Populartimes {
+  private popularTimesService: PopularTimesDataService = new PopularTimesDataService();
+  private placeService: PlaceDetailService = new PlaceDetailService();
+
   constructor(
     private readonly googleApiKey: string,
     private outputFormat: string = 'json',
@@ -13,12 +17,13 @@ export class Populartimes {
   ) {}
 
   public async placeDetails(placeId: string): Promise<IPlace> {
-    if (!this.googleApiKey) {
-      throw new Error('🙄 No Google API Key configured');
-    }
-
     try {
-      const placeDetailsData: IPlace = await this.fetchlocationDetails(placeId);
+      const placeDetailsData: IPlace = await this.placeService.fetchlocationDetails(
+        placeId,
+        this.outputFormat,
+        this.googleApiKey,
+        this.language
+      );
       return placeDetailsData;
     } catch (error) {
       console.error('🙈 Something happend during creating placeDetails', error);
@@ -52,33 +57,6 @@ export class Populartimes {
     } catch (error) {
       console.error('🤔 Something went wrong creating the popular times.', error);
       return null;
-    }
-  }
-
-  private async fetchlocationDetails(placeId: string): Promise<IPlace> {
-    // tslint:disable-next-line:max-line-length
-    const apiDetailsUrl = `${API_DETAILS}${this.outputFormat}?placeid=${placeId}&key=${this.googleApiKey}&language=${this.language}`;
-    let response;
-    try {
-      response = await axios.request<any>({
-        url: apiDetailsUrl
-      });
-      return {
-        id: response.data.result.id,
-        name: response.data.result.name,
-        business_status: response.data.result.business_status,
-        geometry: {
-          lat: response.data.result.geometry.location.lat,
-          long: response.data.result.geometry.location.lng
-        },
-        opening_hours: {
-          open_now: response.data.result.opening_hours.open_now,
-          periods: response.data.result.opening_hours.periods
-        }
-      };
-    } catch (error) {
-      console.error('🤔 Something went wrong fetching the location details.');
-      throw new Error(error);
     }
   }
 
