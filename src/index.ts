@@ -10,6 +10,6 @@ const populartimes = new Populartimes(process.env.GOOGLEAPIKEY);
 const testPlace = 'ChIJc9Ra71_RmUcRzdxRjVQjqXo'; // IKEA Ludwigsburg
 
 (async () => {
-  const data = await populartimes.locationPopulartimes(testPlace);
+  const data = await populartimes.fullWeek(testPlace);
   console.log('🚀', data);
 })();

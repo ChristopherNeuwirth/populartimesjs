@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { JSDOM } from 'jsdom';
 import puppeteer from 'puppeteer';
-import { API_DETAILS, UI_DETAILS, languageSpecificMagic, weekOrderOfApi } from './model/constants';
-import { IPlace, ILivePopularity, IPopularTime } from './model/model';
+import { languageSpecificMagic } from './service/i18n';
+import { API_DETAILS, UI_DETAILS, weekOrderOfApi } from './model/constants';
+import { IPlace, ILivePopularity, IPopularTime, IExtractedData } from './model/model';
 
 export class Populartimes {
   constructor(
@@ -29,16 +30,19 @@ export class Populartimes {
   public now() {}
 
   // @TODO: return all available times for base graph
-  public fullWeek() {}
+  public async fullWeek(placeId: string): Promise<IExtractedData> {
+    const fullWeekData: IExtractedData = await this.locationPopulartimes(placeId);
+    return fullWeekData;
+  }
 
   // @TODO: return the popular times of today
   public today() {}
 
+  // @TODO: Debugging mode
   // @TODO: add method to debug api if something changes on google side
   public debug() {}
 
-  public async locationPopulartimes(placeId: string) {
-    // @TODO: Debugging mode
+  private async locationPopulartimes(placeId: string): Promise<IExtractedData> {
     try {
       const googlePageBody: JSDOM = new JSDOM(await this.fetchPlaceData(placeId));
       const rawData = this.transformDomDataToPopularRawtimes(googlePageBody);
@@ -124,7 +128,7 @@ export class Populartimes {
     };
   }
 
-  private transformRawData(raw: any) {
+  private transformRawData(raw: any): IExtractedData {
     const rawPopularTimes = raw.rawPopulartimes;
 
     let currentPopularity: number = 0;

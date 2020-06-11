@@ -69,3 +69,9 @@ export interface ILocalization {
 export interface IWeek {
   [key: number]: string;
 }
+
+export interface IExtractedData {
+  currentPopularity: number;
+  currentPopularityText: ILivePopularity;
+  popularTimes: IPopularTime[];
+}
