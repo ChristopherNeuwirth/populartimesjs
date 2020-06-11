@@ -80,7 +80,7 @@ Text
 placeDetails(placeId: string): Promise<IPlace>
 ```
 
-Text
+day = index of weekday array starting with 0 sunday
 
 ```json
 {
@@ -91,7 +91,6 @@ Text
   "opening_hours": {
     "open_now": true,
     "periods": [
-      // day = index of weekday array starting with 0 sunday
       { "close": { "day": 1, "time": "2000" }, "open": { "day": 1, "time": "1000" } },
       { "close": { "day": 2, "time": "2000" }, "open": { "day": 2, "time": "1000" } },
       { "close": { "day": 3, "time": "2000" }, "open": { "day": 3, "time": "1000" } },
@@ -112,6 +111,8 @@ Text
 `currentPopularityText(placeId: string): Promise<ILivePopularity>`
 
 `today(placeId: string): Promise<IPopularTime>`
+
+`placeDetails(placeId: string): Promise<IPlace>`
 
 class Populartimes
 googleApiKey: string,
