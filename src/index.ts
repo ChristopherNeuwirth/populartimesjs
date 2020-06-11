@@ -8,7 +8,10 @@ import { Populartimes } from './populartimes';
 
 const populartimes = new Populartimes(process.env.GOOGLEAPIKEY);
 const testPlace = 'ChIJc9Ra71_RmUcRzdxRjVQjqXo'; // IKEA Ludwigsburg
-
+(async () => {
+  const data = await populartimes.placeDetails(testPlace);
+  console.log('🏠', data);
+})();
 (async () => {
   const data = await populartimes.fullWeek(testPlace);
   console.log('🚀', data);

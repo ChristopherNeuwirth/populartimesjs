@@ -11,6 +11,10 @@ export class PlaceDetailService {
     apiKey: string,
     language: string
   ): Promise<IPlace> {
+    if (apiKey === 'NONE') {
+      throw new Error('💩 You need a personal API key to fetch this data');
+    }
+
     const apiDetailsUrl = `${API_DETAILS}${outputFormat}?placeid=${placeId}&key=${apiKey}&language=${language}`;
     let response;
     try {
