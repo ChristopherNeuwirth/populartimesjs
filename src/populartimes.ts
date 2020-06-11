@@ -48,9 +48,8 @@ export class Populartimes {
     }
 
     const rawData = this.transformDomDataToPopularRawtimes(googlePageBody);
-    // @TODO: transform to single data (extract today as additional value and transform to entry)
     const extractedData = this.transformRawData(rawData);
-    // @TODO: sort due to localized order of weekdays
+    // @TODO: IMPROVE ERROR HANDLIUNG. IF FUCKED UP RETURN ERROR (currently it gets sucked)
 
     return extractedData;
   }
@@ -82,7 +81,7 @@ export class Populartimes {
   }
 
   private async fetchPlaceData(placeId: string): Promise<string> {
-    const uiDetailsUrl = `${UI_DETAILS}?q=place_id:${placeId}`;
+    const uiDetailsUrl = `${UI_DETAILS}?q=place_id:${placeId}&hl=${this.language}`;
 
     let data: string;
 
@@ -173,7 +172,7 @@ export class Populartimes {
         continue;
       }
 
-      rawPopularTimes[day].forEach((entry: any, index: number) => {
+      rawPopularTimes[day].forEach((entry: any) => {
         const timeValuePair = languageSpecificMagic[this.language].extractLocalizedValues(entry);
         popularTimes[weekDayIndex].data.splice(timeValuePair.time, 1, timeValuePair.value);
       });
