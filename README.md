@@ -13,6 +13,9 @@ https://developers.google.com/maps/documentation/javascript/examples/places-plac
 ## Example
 
 ```js
+// index.ts
+import { Populartimes } from 'populartimesjs';
+
 const populartimes = new Populartimes('yourGoogleAPIKey'); // just needed if you want to get place details
 const testPlace = 'ChIJsWlZerbYnUcRI1QgNIGOX5c';
 
