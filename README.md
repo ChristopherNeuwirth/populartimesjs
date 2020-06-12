@@ -26,7 +26,7 @@ Mind the default languge 🇩🇪. You can add and also configure others by init
 
 ```js
 // index.ts
-import { Populartimes } from 'populartimesjs';
+import { Populartimes } from '@christophern/populartimesjs';
 
 const populartimes = new Populartimes('yourGoogleAPIKey'); // just needed if you want to get place details
 const testPlace = 'ChIJsWlZerbYnUcRI1QgNIGOX5c';
@@ -41,7 +41,7 @@ const testPlace = 'ChIJsWlZerbYnUcRI1QgNIGOX5c';
 
 ```js
 //index.js
-var Populartimes = require('populartimesjs').Populartimes;
+var Populartimes = require('@christophern/populartimesjs').Populartimes;
 var populartimes = new Populartimes();
 
 populartimes.fullWeek('ChIJsWlZerbYnUcRI1QgNIGOX5c').then((data) => {
@@ -129,18 +129,23 @@ This method returns you available meta data of a place by the official Google Ma
 ## Documentation
 
 ### fullWeek(placeId: string)
+
 Returns you the full data available.
 
 ### now(placeId: string)
+
 Returns you just the `currentPopularity`.
 
 ### currentPopularityText(placeId: string)
+
 Returns you the localized `currentPopularityText` property.
 
 ### today(placeId: string)
+
 Returns you the full data but instead all weekdays it just returns you the popular times of today.
 
 ### placeDetails(placeId: string)
+
 Returns you the meta data of a place by the official Google Maps API if you provide an api key to `populartimes`.
 
 ## Development
