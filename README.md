@@ -15,7 +15,7 @@ All you need to get started is a place id of a Google Maps place, you can find t
 Start a new project or import `populartimesjs` to an existing one as dependency.
 
 ```bash
-npm install populartimesjs --save
+npm install @christophern/populartimesjs --save
 ```
 
 Mind the default languge 🇩🇪. You can add and also configure others by initializing `populartimesjs` with the language property.

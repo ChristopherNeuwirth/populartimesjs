@@ -1,5 +1,5 @@
 {
-  "name": "populartimesjs",
+  "name": "@christophern/populartimesjs",
   "version": "1.0.0",
   "description": "Retrieve popular times and current popularity of google places by its id.",
   "main": "dist/populartimes.js",
