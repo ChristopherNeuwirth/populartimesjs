@@ -7,7 +7,8 @@
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "start:watch": "nodemon",
     "build": "tsc",
-    "preversion": "npm run build"
+    "preversion": "npm run build",
+    "postversion": "git push"
   },
   "repository": {
     "type": "git",

@@ -123,7 +123,7 @@ export class PopularTimesDataService {
     }
 
     // console.log(rawPopularTimes);
-    console.log(popularTimes);
+    // console.log(popularTimes);
 
     return {
       currentPopularity,
