@@ -128,25 +128,20 @@ This method returns you available meta data of a place by the official Google Ma
 
 ## Documentation
 
-###fullWeek(placeId: string)
+### fullWeek(placeId: string)
 Returns you the full data available.
 
-###now(placeId: string)
+### now(placeId: string)
 Returns you just the `currentPopularity`.
 
-###currentPopularityText(placeId: string)
+### currentPopularityText(placeId: string)
 Returns you the localized `currentPopularityText` property.
 
-###today(placeId: string)
+### today(placeId: string)
 Returns you the full data but instead all weekdays it just returns you the popular times of today.
 
-###placeDetails(placeId: string)
+### placeDetails(placeId: string)
 Returns you the meta data of a place by the official Google Maps API if you provide an api key to `populartimes`.
-
-class Populartimes
-googleApiKey: string,
-outputFormat: string = 'json',
-language: string = 'de'
 
 ## Development
 
