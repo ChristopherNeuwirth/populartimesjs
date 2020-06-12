@@ -2,15 +2,27 @@
 
 > ☝️ Currently under development
 
-> 🇩🇪 Currently only working in German. English compatibility follows due to am / pm issue.
+> 🇩🇪 Currently only working in German. English compatibility follows as soon as am / pm issue is solved. Language has no impact on the functionality.
 
 PopulartimesJs is a javascript based library to retrieve the popular times of a Google Place, its current popularity and if you provide a Google Developer API key, place meta data such as location, name and many more. All you need to provide is a Google Place id. This library is based on the idea of [m-wrzr populartimes library](https://github.com/m-wrzr/populartimes).
 
+🙈Be aware this library can get broken due to changes of Google Places. Since Google does not provide popular times of places by its api this library makes use of the `aria labels` for screen readers and converts them into a structured response.
+
 ## Getting Started
 
-https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder
+All you need to get started is a place id of a Google Maps place, you can find them by the [Google Places ID Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder).
+
+Start a new project or import `populartimesjs` to an existing one as dependency.
+
+```bash
+npm install populartimesjs --save
+```
+
+Mind the default languge 🇩🇪. You can add and also configure others by initializing `populartimesjs` with the language property.
 
 ## Example
+
+### Typescript
 
 ```js
 // index.ts
@@ -25,13 +37,25 @@ const testPlace = 'ChIJsWlZerbYnUcRI1QgNIGOX5c';
 })();
 ```
 
+### Vanilla / Node
+
+```js
+//index.js
+var Populartimes = require('populartimesjs').Populartimes;
+var populartimes = new Populartimes();
+
+populartimes.fullWeek('ChIJsWlZerbYnUcRI1QgNIGOX5c').then((data) => {
+  console.log('🚀', data);
+});
+```
+
 ## Output
 
 ```js
 fullWeek(placeId: string): Promise<IExtractedData>
 ```
 
-Text
+This method gives you access to the complete data available. See the documentation section blow for accessing specific subsets.
 
 ```json
 {
@@ -80,7 +104,7 @@ Text
 placeDetails(placeId: string): Promise<IPlace>
 ```
 
-day = index of weekday array starting with 0 sunday
+This method returns you available meta data of a place by the official Google Maps API. It requires you to initialize `populartimesjs` with a personal api key.
 
 ```json
 {
@@ -104,15 +128,20 @@ day = index of weekday array starting with 0 sunday
 
 ## Documentation
 
-`fullWeek(placeId: string): Promise<IExtractedData>`
+###fullWeek(placeId: string)
+Returns you the full data available.
 
-`now(placeId: string): Promise<number>`
+###now(placeId: string)
+Returns you just the `currentPopularity`.
 
-`currentPopularityText(placeId: string): Promise<ILivePopularity>`
+###currentPopularityText(placeId: string)
+Returns you the localized `currentPopularityText` property.
 
-`today(placeId: string): Promise<IPopularTime>`
+###today(placeId: string)
+Returns you the full data but instead all weekdays it just returns you the popular times of today.
 
-`placeDetails(placeId: string): Promise<IPlace>`
+###placeDetails(placeId: string)
+Returns you the meta data of a place by the official Google Maps API if you provide an api key to `populartimes`.
 
 class Populartimes
 googleApiKey: string,
@@ -120,3 +149,5 @@ outputFormat: string = 'json',
 language: string = 'de'
 
 ## Development
+
+`// follows`
