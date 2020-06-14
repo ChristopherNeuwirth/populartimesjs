@@ -32,6 +32,9 @@ export class PopularTimesDataService {
       return data;
     } catch (error) {
       console.error('😵 Something went wrong fetching the data with puppeteer.');
+      console.error(
+        `🤓 Are you sure the place provides popular times? Check out by viewing your provided place: ${uiDetailsUrl}`
+      );
       throw new Error(error);
     }
   }
