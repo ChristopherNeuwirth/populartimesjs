@@ -1,9 +1,5 @@
 # populartimesjs
 
-> ☝️ Currently under development
-
-> 🇩🇪 Currently only supported localization is German. English compatibility follows as soon as am / pm issue is solved. Language has no impact on the functionality.
-
 Populartimesjs is a javascript based library to retrieve the popular times of a Google Place, its current popularity and if you provide a Google Developer API key, place meta data such as location, name and many more. All you need to provide is a Google Place id. This library is based on the idea of [m-wrzr populartimes library](https://github.com/m-wrzr/populartimes).
 
 🙈 Be aware this library can get broken due to changes of Google Places. Since Google does not provide popular times of places by its api this library makes use of the `aria labels` for screen readers and converts them into a structured response.
@@ -18,7 +14,7 @@ Start a new project or import `populartimesjs` to an existing one as dependency.
 npm install @christophern/populartimesjs --save
 ```
 
-Mind the default languge 🇩🇪. You can add and also configure others by initializing `populartimesjs` with the language property.
+Mind the default languge 🇩🇪 of the localized labels and texts. This just has impact on the `nowBadge` and the `liveDescription` property.
 
 ## Example
 

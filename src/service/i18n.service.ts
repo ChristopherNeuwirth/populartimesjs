@@ -20,22 +20,5 @@ export const languageSpecificMagic: ILocalization = {
         value: Number(valueStringParts[0])
       };
     }
-  },
-  en: {
-    currently: 'Currently',
-    fallbackClosed: ['Currently', 'closed'],
-    pattern: (time: string, value: string) => {
-      // @TODO: Solve AM / PM issue
-      return ``;
-    },
-    patternSplitLast: null, // @TODO
-    patternSplit: [], // @TODO
-    extractLocalizedValues: (timeValueString: string) => {
-      // @TODO
-      return {
-        time: null,
-        value: null
-      };
-    }
   }
 };
