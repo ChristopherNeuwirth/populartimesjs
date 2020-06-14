@@ -68,6 +68,7 @@
     "ext": "ts"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "!dist/**/*.test.*"
   ]
 }
