@@ -2,7 +2,7 @@
 
 > ☝️ Currently under development
 
-> 🇩🇪 Currently only working in German. English compatibility follows as soon as am / pm issue is solved. Language has no impact on the functionality.
+> 🇩🇪 Currently only supported localization is German. English compatibility follows as soon as am / pm issue is solved. Language has no impact on the functionality.
 
 Populartimesjs is a javascript based library to retrieve the popular times of a Google Place, its current popularity and if you provide a Google Developer API key, place meta data such as location, name and many more. All you need to provide is a Google Place id. This library is based on the idea of [m-wrzr populartimes library](https://github.com/m-wrzr/populartimes).
 
@@ -10,7 +10,7 @@ Populartimesjs is a javascript based library to retrieve the popular times of a 
 
 ## Getting Started
 
-All you need to get started is a place id of a Google Maps place, you can find them by the [Google Places ID Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder).
+All you need to get started is a place id of a Google Maps place, you can find them by the [Google Places ID Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder). Mind that the place needs to provide popular times. Places without popular times are not supported.
 
 Start a new project or import `populartimesjs` to an existing one as dependency.
 
