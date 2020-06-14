@@ -35,7 +35,9 @@ export class PlaceDetailService {
         }
       };
     } catch (error) {
-      console.error('🤔 Something went wrong fetching the location details.');
+      console.error(
+        `🤔 Something went wrong fetching the location details. Can you access the provided place: ${apiDetailsUrl}`
+      );
       throw new Error(error);
     }
   }
