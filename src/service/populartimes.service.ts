@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import puppeteer from 'puppeteer';
 import { languageSpecificMagic } from './i18n.service';
 import { IExtractedData, ILivePopularity, IPopularTime } from '../model/model';
-import { UI_DETAILS, weekOrderOfApi } from '../model/constants';
+import { UI_DETAILS, weekOrderOfApi, cookieAgree } from '../model/constants';
 
 export class PopularTimesDataService {
   constructor() {}
@@ -27,6 +27,11 @@ export class PopularTimesDataService {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto(uiDetailsUrl, { waitUntil: 'networkidle2' });
+      const [button] = await page.$x(`//button[contains(., "${cookieAgree[language]}")]`);
+      if (button) {
+          await button.click();
+      }
+      await page.waitForSelector('.section-popular-times', { visible: true });
       const data: string = await page.evaluate(() => document.querySelector('.section-popular-times').outerHTML);
       await browser.close();
       return data;

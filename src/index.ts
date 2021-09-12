@@ -5,7 +5,7 @@ import { Populartimes } from './populartimes';
 
 // just for development purpose
 
-const populartimes = new Populartimes(process.env.GOOGLEAPIKEY);
+const populartimes = new Populartimes(process.env.GOOGLEAPIKEY, 'json', 'en');
 const testPlace = 'ChIJc9Ra71_RmUcRzdxRjVQjqXo'; // IKEA Ludwigsburg
 (async () => {
   const data = await populartimes.placeDetails(testPlace);

@@ -14,3 +14,8 @@ export const weekOrderOfApi: IWeek = {
   5: 'friday',
   6: 'saturday'
 };
+
+export const cookieAgree: any = {
+  de: 'Ich stimme zu',
+  en: 'I agree'
+};
