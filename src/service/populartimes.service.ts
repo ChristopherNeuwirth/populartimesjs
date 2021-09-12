@@ -31,7 +31,7 @@ export class PopularTimesDataService {
       if (button) {
           await button.click();
       }
-      await page.waitForSelector('.section-popular-times-select', { visible: true });
+      await page.waitForSelector('.section-popular-times', { visible: true });
       const data: string = await page.evaluate(() => document.querySelector('.section-popular-times').outerHTML);
       await browser.close();
       return data;
