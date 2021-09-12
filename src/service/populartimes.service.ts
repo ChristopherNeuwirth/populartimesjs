@@ -24,14 +24,14 @@ export class PopularTimesDataService {
     const uiDetailsUrl = `${UI_DETAILS}?q=place_id:${placeId}&hl=${language}`;
 
     try {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({headless: false});
       const page = await browser.newPage();
       await page.goto(uiDetailsUrl, { waitUntil: 'networkidle2' });
       const [button] = await page.$x(`//button[contains(., "${cookieAgree[language]}")]`);
       if (button) {
           await button.click();
       }
-      await page.waitForSelector('.section-popular-times', { visible: true });
+      await page.waitForSelector('.section-popular-times-select', { visible: true });
       const data: string = await page.evaluate(() => document.querySelector('.section-popular-times').outerHTML);
       await browser.close();
       return data;
@@ -49,9 +49,12 @@ export class PopularTimesDataService {
     const desc = domData?.window?.document?.getElementsByClassName('section-popular-times-live-description')[0]
       ?.innerHTML;
 
+    if (languageSpecificMagic[language]?.fallbackClosed[0] === undefined) {
+      console.log(`🔥 For your used language key ${language} the translations in i18n.service.ts are not setup`);
+    }
     const rawCurrentPopularityText: ILivePopularity = {
-      nowBadge: badge ? badge : languageSpecificMagic[language].fallbackClosed[0],
-      liveDescription: desc ? desc : languageSpecificMagic[language].fallbackClosed[1]
+      nowBadge: badge ? badge : languageSpecificMagic[language]?.fallbackClosed[0],
+      liveDescription: desc ? desc : languageSpecificMagic[language]?.fallbackClosed[1]
     };
 
     const rawPopulartimes: any = {}; // @TODO: add interface
